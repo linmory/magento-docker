@@ -1,0 +1,77 @@
+version: '3'
+
+services:
+
+### Workspace Utilities Container ###########################
+
+    workspace:
+        build:
+            context: ./workspace
+            args:
+                - MAGENTO_ROOT=${MAGENTO_ROOT}
+                - CRON=false
+                - INSTALL_XDEBUG=false
+                - COMPOSER_GLOBAL_INSTALL=false
+                - PUID=1000
+                - PGID=1000
+        volumes:
+            - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
+            - ./logs/magento/:${MAGENTO_ROOT}/var/log
+            - ./data/backups/:${MAGENTO_ROOT}/var/backups
+            - ${SSH_AUTH_SOCK}:/ssh-agent # Forward local machine SSH key to docker
+        tty: true
+        environment:
+            SSH_AUTH_SOCK: /ssh-agent
+
+### PHP-FPM Container #######################################
+
+    php-fpm:
+        build:
+            context: ./php-fpm
+            args:
+                - MAGENTO_ROOT=${MAGENTO_ROOT}
+                - INSTALL_XDEBUG=false
+        volumes:
+            - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
+        links:
+            - workspace
+
+### Nginx Server Container ##################################
+
+    nginx:
+        build:
+            context: ./nginx
+            args:
+                - PHP_UPSTREAM=php-fpm
+                - PUID=1000
+                - PGID=1000
+                - MAGENTO_ROOT=${MAGENTO_ROOT}
+        volumes:
+            - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
+            - ./logs/nginx/:/var/log/nginx
+        ports:
+            - "8080:80"
+            - "443:443"
+        links:
+            - php-fpm
+
+### MySQL Container #########################################
+
+    mysql:
+        build: ./mysql
+        volumes:
+            - /Users/shao/.mysql/mysql5.7:/var/lib/mysql
+        ports:
+            - "3307:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+### Redis Container #########################################
+
+    redis:
+        image: redis:3.2-alpine
+        volumes:
+            - /Users/shao/.redis:/data
