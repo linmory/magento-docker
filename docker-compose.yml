@@ -14,6 +14,8 @@ services:
                 - COMPOSER_GLOBAL_INSTALL=false
                 - PUID=1000
                 - PGID=1000
+                - DEBUG=${DEBUG}
+                - VIRTUAL_HOST=${VIRTUAL_HOST}
         volumes:
             - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
             - ./logs/magento/:${MAGENTO_ROOT}/var/log
@@ -31,6 +33,8 @@ services:
             args:
                 - MAGENTO_ROOT=${MAGENTO_ROOT}
                 - INSTALL_XDEBUG=false
+                - DEBUG=${DEBUG}
+                - VIRTUAL_HOST=${VIRTUAL_HOST}
         volumes:
             - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
         links:
@@ -45,6 +49,8 @@ services:
                 - PHP_UPSTREAM=php-fpm
                 - PUID=1000
                 - PGID=1000
+                - DEBUG=${DEBUG}
+                - VIRTUAL_HOST=${VIRTUAL_HOST}
                 - MAGENTO_ROOT=${MAGENTO_ROOT}
         volumes:
             - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
@@ -52,6 +58,10 @@ services:
         ports:
             - "8080:80"
             - "443:443"
+        environment:
+            - VIRTUAL_HOST=${VIRTUAL_HOST}
+            - MAGENTO_ROOT=${MAGENTO_ROOT}
+            - MAGENTO_RUN_MODE=${MAGENTO_RUN_MODE}
         links:
             - php-fpm
 
