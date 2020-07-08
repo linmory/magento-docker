@@ -15,7 +15,6 @@ services:
                 - PUID=1000
                 - PGID=1000
                 - DEBUG=${DEBUG}
-                - VIRTUAL_HOST=${VIRTUAL_HOST}
         volumes:
             - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
             - ./logs/magento/:${MAGENTO_ROOT}/var/log
@@ -32,11 +31,14 @@ services:
             context: ./php-fpm
             args:
                 - MAGENTO_ROOT=${MAGENTO_ROOT}
-                - INSTALL_XDEBUG=false
+                - MAGENTO_RUN_MODE=${MAGENTO_RUN_MODE}
+                - INSTALL_XDEBUG=${PHP_ENABLE_XDEBUG}
+                - INSTALL_OPCACHE=${PHP_FPM_INSTALL_OPCACHE}
                 - DEBUG=${DEBUG}
                 - VIRTUAL_HOST=${VIRTUAL_HOST}
         volumes:
             - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
+            - ./logs/xdebug/:/tmp/xdebug
         links:
             - workspace
 
@@ -52,16 +54,14 @@ services:
                 - DEBUG=${DEBUG}
                 - VIRTUAL_HOST=${VIRTUAL_HOST}
                 - MAGENTO_ROOT=${MAGENTO_ROOT}
+                - MAGENTO_RUN_MODE=${MAGENTO_RUN_MODE}
         volumes:
             - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
             - ./logs/nginx/:/var/log/nginx
         ports:
-            - "8080:80"
+            - "80:80"
             - "443:443"
-        environment:
-            - VIRTUAL_HOST=${VIRTUAL_HOST}
-            - MAGENTO_ROOT=${MAGENTO_ROOT}
-            - MAGENTO_RUN_MODE=${MAGENTO_RUN_MODE}
+
         links:
             - php-fpm
 
@@ -85,3 +85,5 @@ services:
         image: redis:3.2-alpine
         volumes:
             - /Users/shao/.redis:/data
+        ports:
+            - "${REDIS_PORT}:6379"

@@ -47,6 +47,7 @@ RUN apt-get update && \
         php7.2-memcached \
         php7.2-gd \
         php7.2-dev \
+        php7.2-soap \
         pkg-config \
         libcurl4-openssl-dev \
         libedit-dev \
