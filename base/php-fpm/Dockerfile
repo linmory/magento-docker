@@ -42,6 +42,7 @@ RUN set -eux; \
 RUN set -eux; \
     # Install the PHP pdo_mysql extention
     docker-php-ext-install \
+      bcmath \
       intl \
       mbstring \
       pdo_mysql \

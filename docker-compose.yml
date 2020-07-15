@@ -16,9 +16,9 @@ services:
                 - PGID=1000
                 - DEBUG=${DEBUG}
         volumes:
-            - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
-            - ./logs/magento/:${MAGENTO_ROOT}/var/log
-            - ./data/backups/:${MAGENTO_ROOT}/var/backups
+            - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}:cached
+            - ./logs/magento/:${MAGENTO_ROOT}/var/log:delegated
+            - ./data/backups/:${MAGENTO_ROOT}/var/backups:delegated
             - ${SSH_AUTH_SOCK}:/ssh-agent # Forward local machine SSH key to docker
         tty: true
         environment:
@@ -37,7 +37,7 @@ services:
                 - DEBUG=${DEBUG}
                 - VIRTUAL_HOST=${VIRTUAL_HOST}
         volumes:
-            - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
+            - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}:cached
             - ./logs/xdebug/:/tmp/xdebug
         links:
             - workspace
@@ -56,8 +56,8 @@ services:
                 - MAGENTO_ROOT=${MAGENTO_ROOT}
                 - MAGENTO_RUN_MODE=${MAGENTO_RUN_MODE}
         volumes:
-            - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}
-            - ./logs/nginx/:/var/log/nginx
+            - ${MAGENTO_HOST_SOURCE}/:${MAGENTO_ROOT}:cached
+            - ./logs/nginx/:/var/log/nginx:delegated
         ports:
             - "80:80"
             - "443:443"
@@ -70,7 +70,7 @@ services:
     mysql:
         build: ./mysql
         volumes:
-            - /Users/shao/.mysql/mysql5.7:/var/lib/mysql
+            - /Users/shao/.mysql/mysql5.7:/var/lib/mysql:cached
         ports:
             - "3307:3306"
         environment:
@@ -84,6 +84,6 @@ services:
     redis:
         image: redis:3.2-alpine
         volumes:
-            - /Users/shao/.redis:/data
+            - /Users/shao/.redis:/data:delegated
         ports:
             - "${REDIS_PORT}:6379"
