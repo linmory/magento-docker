@@ -4,3 +4,4 @@
 /docker-compose.local.yml
 /redis.conf
 /.idea
+.docker-sync
