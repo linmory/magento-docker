@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  workspace:
+    volumes:
+      - applications-sync:${MAGENTO_ROOT}
+  php-fpm:
+    volumes:
+      - applications-sync:${MAGENTO_ROOT}
+  nginx:
+    volumes:
+      - applications-sync:${MAGENTO_ROOT}
+volumes:
+  applications-sync:
+    external:
+      name: "applications-docker-sync"
