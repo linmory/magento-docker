@@ -17,8 +17,6 @@ services:
         - DEBUG=${DEBUG}
     volumes:
       - ${MAGENTO_HOST_SOURCE}:${MAGENTO_ROOT}${APP_CODE_CONTAINER_FLAG}
-#      - ./logs/magento/:${MAGENTO_ROOT}/var/log:delegated
-#      - ./data/backups/:${MAGENTO_ROOT}/var/backups:delegated
     tty: true
     environment:
       SSH_AUTH_SOCK: /ssh-agent
@@ -56,7 +54,6 @@ services:
         - MAGENTO_RUN_MODE=${MAGENTO_RUN_MODE}
     volumes:
       - ${MAGENTO_HOST_SOURCE}:${MAGENTO_ROOT}${APP_CODE_CONTAINER_FLAG}
-#      - ./logs/nginx/:/var/log/nginx:delegated
     ports:
       - "80:80"
       - "443:443"
