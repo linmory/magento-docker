@@ -13,4 +13,4 @@ services:
 volumes:
   applications-sync:
     external:
-      name: "applications-docker-sync"
+      name: "kering-docker-sync"

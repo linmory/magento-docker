@@ -3,7 +3,7 @@ version: "2"
 options:
   verbose: false
 syncs:
-  applications-docker-sync: # name of the intermediary sync volume
+  kering-docker-sync: # name of the intermediary sync volume
     compose-dev-file-path: 'docker-compose.sync.yml' # docker-compose override file
 
     src: '${MAGENTO_HOST_SOURCE}' # host source directory
